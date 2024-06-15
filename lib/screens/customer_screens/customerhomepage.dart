@@ -1,14 +1,16 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:helpile_capstone/screens/customer_screens/nearbyserviceproviders.dart';
+import 'package:helpile_capstone/screens/customer_screens/scheduledappointment.dart';
 import 'package:helpile_capstone/screens/customer_screens/servicecategorypage.dart';
 import 'package:helpile_capstone/screens/widgets/avatar/circleavatar.dart'; // Assuming this file contains CustomCircleAvatar
 import 'package:helpile_capstone/screens/widgets/title/sectiontitle.dart';
 import 'package:models/models.dart';
 
 import '../widgets/cardss/schedulepreviewcard.dart';
+import 'customerprofilepage.dart';
 
 class CustomerHomepage extends StatelessWidget {
-  const CustomerHomepage({super.key});
+  const CustomerHomepage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,61 +19,56 @@ class CustomerHomepage extends StatelessWidget {
 }
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+  const HomeView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.black12,
         toolbarHeight: 100,
-        title: const Row(children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Welcome",
-                style: TextStyle(fontSize: 15),
-              ),
-              SizedBox(
-                height: 4.0,
-              ),
-              Text(
-                "User",
-                style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 4.0,
-              ),
-            ],
-          ),
-          Spacer(),
-          Row(
-            children: [
-              Icon(Icons.location_on),
-              SizedBox(
-                width: 5,
-              ),
-              Text(
-                "Kitchener",
-                style: TextStyle(fontSize: 17),
-              ),
-              SizedBox(
-                width: 5,
-              ),
-              Icon(Icons.expand_more)
-            ],
-          ),
-        ]),
+        title: const Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Welcome",
+                  style: TextStyle(fontSize: 15),
+                ),
+                SizedBox(height: 4.0),
+                Text(
+                  "User",
+                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 4.0),
+              ],
+            ),
+            Spacer(),
+            Row(
+              children: [
+                Icon(Icons.location_on),
+                SizedBox(width: 5),
+                Text(
+                  "Kitchener",
+                  style: TextStyle(fontSize: 17),
+                ),
+                SizedBox(width: 5),
+                Icon(Icons.expand_more)
+              ],
+            ),
+          ],
+        ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(65.0),
+          preferredSize: const Size.fromHeight(65.0),
           child: Padding(
-            padding: EdgeInsets.all(9),
+            padding: const EdgeInsets.all(9),
             child: TextFormField(
               decoration: InputDecoration(
                 hintText: "Search for Service Providers...",
-                hintStyle: TextStyle(color: Colors.grey),
+                hintStyle: const TextStyle(color: Colors.grey),
                 prefixIcon: Icon(Icons.search, color: Colors.grey),
                 suffixIcon: Container(
                   margin: EdgeInsets.all(10),
@@ -87,8 +84,7 @@ class HomeView extends StatelessWidget {
                 ),
                 filled: true,
                 fillColor: Colors.white,
-                contentPadding:
-                    EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                contentPadding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20.0),
                   borderSide: BorderSide.none,
@@ -104,29 +100,43 @@ class HomeView extends StatelessWidget {
               ),
             ),
           ),
-        ), // Example content for the AppBar
+        ),
       ),
       body: const SingleChildScrollView(
         child: Column(
           children: [
-            _DoctorCategories(),
-            SizedBox(
-              height: 10,
-            ),
+            _ServiceCategory(),
+            SizedBox(height: 10),
             _MySchedule(),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             _NearbyServiceProviders(),
-          ], // Example content for the body
+          ],
         ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 0,
+        onTap: (index) {
+          if (index == 1) {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => CustomerProfilePage()));
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }
 }
 
-class _DoctorCategories extends StatelessWidget {
-  const _DoctorCategories({super.key});
+class _ServiceCategory extends StatelessWidget {
+  const _ServiceCategory({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -140,8 +150,7 @@ class _DoctorCategories extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => const Servicecategorypage()),
+                MaterialPageRoute(builder: (context) => const Servicecategorypage()),
               );
             },
           ),
@@ -164,7 +173,7 @@ class _DoctorCategories extends StatelessWidget {
 }
 
 class _MySchedule extends StatelessWidget {
-  const _MySchedule({super.key});
+  const _MySchedule({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -176,10 +185,21 @@ class _MySchedule extends StatelessWidget {
             title: "My Schedule",
             action: "see all",
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const Servicecategorypage()),
+              // Show the pop-up message
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text('My Appointments'),
+                  content: Text('You have no appointments scheduled.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                ),
               );
             },
           ),
@@ -191,12 +211,14 @@ class _MySchedule extends StatelessWidget {
   }
 }
 
-
 class _NearbyServiceProviders extends StatelessWidget {
-  const _NearbyServiceProviders({Key? key});
+  const _NearbyServiceProviders({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    // Filter service providers based on distance
+    final nearbyServiceProviders = ServiceProvidersList.where((provider) => provider.distance < 2.5).toList();
+
     return Container(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -207,21 +229,19 @@ class _NearbyServiceProviders extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const Servicecategorypage()),
+                MaterialPageRoute(builder: (context) => const Nearbyserviceproviders()),
               );
             },
           ),
-          const SizedBox(
-            height: 5,
-          ),
+          const SizedBox(height: 5),
           ListView.separated(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics:const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              final serviceProvider = ServiceProvidersList[index];
+              final serviceProvider = nearbyServiceProviders[index];
               return Card(
                 elevation: 4,
-                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                margin:const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: ListTile(
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(serviceProvider.imageUrl),
@@ -231,22 +251,50 @@ class _NearbyServiceProviders extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black, // Custom color
+                      color: Colors.black,
                     ),
                   ),
-                  subtitle: Text(
-                    serviceProvider.description,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey, // Custom color
-                    ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        serviceProvider.description,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                          SizedBox(width: 4),
+                          Text(
+                            serviceProvider.rating.toString(),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Icon(Icons.location_on, color: Colors.grey, size: 16),
+                          SizedBox(width: 4),
+                          Text(
+                            '${serviceProvider.distance} km',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   trailing: Text(
                     '\$${serviceProvider.charges.toStringAsFixed(2)}',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.green, // Custom color
+                      color: Colors.green,
                     ),
                   ),
                   onTap: () {
@@ -258,10 +306,17 @@ class _NearbyServiceProviders extends StatelessWidget {
             separatorBuilder: (context, index) {
               return const SizedBox(height: 8);
             },
-            itemCount: ServiceProvidersList.length,
+            itemCount: nearbyServiceProviders.length,
           ),
         ],
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: CustomerHomepage(),
+    debugShowCheckedModeBanner: false,
+  ));
 }
