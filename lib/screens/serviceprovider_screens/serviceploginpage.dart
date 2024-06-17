@@ -123,7 +123,7 @@ class Serviceploginpage extends StatelessWidget {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Servicepsignuppage()),
+                              MaterialPageRoute(builder: (context) => ServicepSignupPage()),
                             );
 
                           },

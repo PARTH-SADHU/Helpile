@@ -18,8 +18,16 @@ class CustomerHomepage extends StatelessWidget {
   }
 }
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
+
+  @override
+  _HomeViewState createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  String _selectedLocation = "Kitchener"; // Default location
+  final List<String> _locations = ["Kitchener", "Toronto", "Waterloo", "Guelph"];
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +36,7 @@ class HomeView extends StatelessWidget {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.black12,
         toolbarHeight: 100,
-        title: const Row(
+        title: Row(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,12 +59,25 @@ class HomeView extends StatelessWidget {
               children: [
                 Icon(Icons.location_on),
                 SizedBox(width: 5),
-                Text(
-                  "Kitchener",
-                  style: TextStyle(fontSize: 17),
+                DropdownButton<String>(
+                  value: _selectedLocation,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedLocation = newValue!;
+                    });
+                  },
+                  items: _locations.map<DropdownMenuItem<String>>((String location) {
+                    return DropdownMenuItem<String>(
+                      value: location,
+                      child: Text(
+                        location,
+                        style: TextStyle(fontSize: 17),
+                      ),
+                    );
+                  }).toList(),
+                  underline: SizedBox(), // Removes the underline
+                  icon: Icon(Icons.expand_more),
                 ),
-                SizedBox(width: 5),
-                Icon(Icons.expand_more)
               ],
             ),
           ],
@@ -216,8 +237,8 @@ class _NearbyServiceProviders extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Filter service providers based on distance
-    final nearbyServiceProviders = ServiceProvidersList.where((provider) => provider.distance < 2.5).toList();
+    // Filter service providers based on distance and take only the first 3
+    final nearbyServiceProviders = ServiceProvidersList.where((provider) => provider.distance < 2.5).toList().take(3).toList();
 
     return Container(
       padding: const EdgeInsets.all(10),
@@ -236,12 +257,12 @@ class _NearbyServiceProviders extends StatelessWidget {
           const SizedBox(height: 5),
           ListView.separated(
             shrinkWrap: true,
-            physics:const NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               final serviceProvider = nearbyServiceProviders[index];
               return Card(
                 elevation: 4,
-                margin:const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                 child: ListTile(
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(serviceProvider.imageUrl),
@@ -308,6 +329,40 @@ class _NearbyServiceProviders extends StatelessWidget {
             },
             itemCount: nearbyServiceProviders.length,
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LocationDropdown extends StatelessWidget {
+  const _LocationDropdown({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      onSelected: (value) {
+        // Handle the selection
+        print('Selected location: $value');
+      },
+      itemBuilder: (BuildContext context) {
+        return <String>['Kitchener', 'Waterloo', 'Cambridge'].map((String location) {
+          return PopupMenuItem<String>(
+            value: location,
+            child: Text(location),
+          );
+        }).toList();
+      },
+      child: Row(
+        children: const [
+          Icon(Icons.location_on),
+          SizedBox(width: 5),
+          Text(
+            "Kitchener",
+            style: TextStyle(fontSize: 17),
+          ),
+          SizedBox(width: 5),
+          Icon(Icons.expand_more),
         ],
       ),
     );

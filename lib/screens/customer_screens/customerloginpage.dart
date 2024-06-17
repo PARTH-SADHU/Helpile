@@ -23,7 +23,6 @@ class CustomerLoginPage extends StatelessWidget {
                 builder: (_) => OnboardingScreens(),
               ),
             );
-
           },
           icon: const Icon(
             Icons.arrow_back_ios,
@@ -32,133 +31,189 @@ class CustomerLoginPage extends StatelessWidget {
           ),
         ),
       ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Column(
-                    children: <Widget>[
-                      FadeInUp(
-                        duration: Duration(milliseconds: 1000),
-                        child:const Text(
-                          "Customer Login",
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                          ),
+      body: SingleChildScrollView(child: LoginBody()),
+    );
+  }
+}
+
+class LoginBody extends StatefulWidget {
+  @override
+  _LoginBodyState createState() => _LoginBodyState();
+}
+
+class _LoginBodyState extends State<LoginBody> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    FadeInUp(
+                      duration: Duration(milliseconds: 1000),
+                      child: const Text(
+                        "Customer Login",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 20),
-                      FadeInUp(
-                        duration: Duration(milliseconds: 1200),
+                    ),
+                    SizedBox(height: 20),
+                    FadeInUp(
+                      duration: Duration(milliseconds: 1200),
+                      child: Text(
+                        "Login to your account",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 40),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        FadeInUp(
+                          duration: Duration(milliseconds: 1200),
+                          child: makeInput(
+                            controller: _emailController,
+                            label: "Email",
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your email';
+                              }
+                              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                                return 'Please enter a valid email address';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        FadeInUp(
+                          duration: Duration(milliseconds: 1300),
+                          child: makeInput(
+                            controller: _passwordController,
+                            label: "Password",
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              if (value.length < 6) {
+                                return 'Password must be at least 6 characters long';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                FadeInUp(
+                  duration: Duration(milliseconds: 1400),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 40),
+                    child: Container(
+                      padding: EdgeInsets.only(top: 3, left: 3),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(color: Colors.black),
+                      ),
+                      child: CustomMaterialButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => CustomerHomepage()),
+                            );
+                          }
+                        },
+                        text: "Login",
+                        height: 60,
+                        borderRadius: 50,
+                        color: Colors.greenAccent,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w600,
+                        key: UniqueKey(), // Add a key if needed
+                      ),
+                    ),
+                  ),
+                ),
+                FadeInUp(
+                  duration: Duration(milliseconds: 1500),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text("Don't have an account?"),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => CustomerSignupPage()),
+                          );
+                        },
                         child: Text(
-                          "Login to your account",
+                          " Sign up",
                           style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 40),
-                    child: Column(
-                      children: <Widget>[
-                        FadeInUp(
-                          duration: Duration(milliseconds: 1200),
-                          child: makeInput(label: "Email"),
-                        ),
-                        FadeInUp(
-                          duration: Duration(milliseconds: 1300),
-                          child: makeInput(label: "Password", obscureText: true),
-                        ),
-                      ],
-                    ),
-                  ),
-                  FadeInUp(
-                    duration: Duration(milliseconds: 1400),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 40),
-                      child: Container(
-                        padding: EdgeInsets.only(top: 3, left: 3),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          border: Border.all(color: Colors.black),
-                        ),
-                        child: CustomMaterialButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => CustomerHomepage()),
-                            );
-                          },
-                          text: "Login",
-                          height: 60,
-                          borderRadius: 50,
-                          color: Colors.greenAccent,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.w600,
-                          key: UniqueKey(), // Add a key if needed
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  FadeInUp(
-                    duration: Duration(milliseconds: 1500),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text("Don't have an account?"),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => CustomerSignupPage()),
-                            );
-
-                          },
-                          child: Text(
-                            " Sign up",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            FadeInUp(
-              duration: Duration(milliseconds: 1200),
-              child: Container(
-                height: MediaQuery.of(context).size.height / 3,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/background.png'),
-                    fit: BoxFit.cover,
-                  ),
+          ),
+          FadeInUp(
+            duration: Duration(milliseconds: 1200),
+            child: Container(
+              height: MediaQuery.of(context).size.height / 3,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/background.png'),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget makeInput({required String label, bool obscureText = false}) {
+  Widget makeInput({
+    required TextEditingController controller,
+    required String label,
+    required String? Function(String?) validator,
+    bool obscureText = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -171,8 +226,10 @@ class CustomerLoginPage extends StatelessWidget {
           ),
         ),
         SizedBox(height: 5),
-        TextField(
+        TextFormField(
+          controller: controller,
           obscureText: obscureText,
+          validator: validator,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
             enabledBorder: OutlineInputBorder(
@@ -236,4 +293,11 @@ class _FadeInUpState extends State<FadeInUp> with SingleTickerProviderStateMixin
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: CustomerLoginPage(),
+    debugShowCheckedModeBanner: false,
+  ));
 }
